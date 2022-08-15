@@ -7,7 +7,7 @@ const orders = require(path.resolve("src/data/orders-data"));
 const nextId = require("../utils/nextId");
 
 // TODO: Implement the /orders handlers needed to make the tests pass
-const orderExists = (req, res, next) => {
+function orderExists (req, res, next) {
   const orderId = req.params.orderId;
   const foundOrder = orders.find((order) => order.id == orderId);
   
@@ -18,7 +18,7 @@ const orderExists = (req, res, next) => {
   next({ status: 404, message: `Order with id ${orderId} does not exist` });
 }
 
-const checkOrder = (req, res, next) => {
+function checkOrder (req, res, next) {
   const { data: { deliverTo, mobileNumber, status, dishes } } = req.body;
   
   if (!deliverTo || deliverTo == "") return next({ status: 400, message: `Order must include a deliverTo` });
@@ -41,20 +41,20 @@ const checkOrder = (req, res, next) => {
   next();
 }
 
-const list = (req, res, next) => {
+function list (req, res, next) {
   res.json({ data: orders });
 }
 
-const read = (req, res, next) => {
+function read (req, res, next) {
   res.json({ data: res.locals.order });
 }
 
-const create = (req, res, next) => {
+function create (req, res, next)  {
   orders.push(res.locals.newOrder);
   res.status(201).json({ data: res.locals.newOrder });
 }
 
-const update = (req, res, next) => {
+function update (req, res, next) {
   const orderId = req.params.orderId;
   const originalOrder = res.locals.order;
   const { data: { id, deliverTo, mobileNumber, status, dishes } } = req.body;
@@ -75,7 +75,7 @@ const update = (req, res, next) => {
   res.json({ data: res.locals.order });
 };
 
-const destroy = (req, res, next) => {
+function destroy (req, res, next) {
   if (res.locals.order.status !== "pending") return next({ status: 400, message: `An order cannot be deleted unless it is pending` });
   
   const orderId = req.params.orderId;
